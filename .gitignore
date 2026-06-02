@@ -1,0 +1,7 @@
+# Keep the plaintext itinerary OUT of the (public) repo.
+# Only the encrypted index.html is ever published.
+src/content.html
+
+node_modules/
+.DS_Store
+.claude/

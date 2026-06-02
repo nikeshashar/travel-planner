@@ -1,0 +1,10 @@
+{
+  "name": "travel-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Password-protected single-page travel plan, encrypted for GitHub Pages.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}
