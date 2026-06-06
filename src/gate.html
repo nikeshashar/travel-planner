@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private &middot; Summer 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/gate.css">
+</head>
+<body>
+  <main class="lock">
+    <div class="ic">&#128274;</div>
+    <h1>South of France <em>Escape</em></h1>
+    <p class="sub">This itinerary is private. Enter the password to view it.</p>
+    <form id="f">
+      <input id="pw" type="password" placeholder="Password" autocomplete="current-password" autofocus required>
+      <button id="go" type="submit">Unlock</button>
+      <p class="err" id="err" role="alert"></p>
+    </form>
+  </main>
+  <script type="application/json" id="payload">__PAYLOAD__</script>
+  <script src="assets/gate.js" defer></script>
+</body>
+</html>

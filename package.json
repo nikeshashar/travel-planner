@@ -4,6 +4,9 @@
   "private": true,
   "description": "Password-protected single-page travel plan, encrypted for GitHub Pages.",
   "type": "module",
+  "engines": {
+    "node": "22"
+  },
   "scripts": {
     "build": "node build.mjs"
   }

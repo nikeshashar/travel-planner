@@ -1,0 +1,85 @@
+:root {
+    --paper: #f3e7d0;
+    --ink: #2c2113;
+    --soft: #6a5a40;
+    --terracotta: #c14a2b;
+    --terra-deep: #9c3a20;
+    --ochre: #d98a2b;
+    --card: #fbf4e6;
+    --line: #d8c39c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(140% 120% at 72% -10%, var(--ochre) 0%, var(--terracotta) 38%, var(--terra-deep) 78%, #6f2814 100%);
+}
+
+.lock {
+    width: 100%;
+    max-width: 400px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: clamp(1.8rem, 6vw, 2.6rem);
+    box-shadow: 0 30px 60px -25px rgba(60, 25, 8, .6);
+    text-align: center;
+}
+
+.ic { font-size: 2.2rem; line-height: 1; }
+
+h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.7rem;
+    letter-spacing: -.01em;
+    margin: .7rem 0 .25rem;
+}
+
+h1 em { font-style: italic; color: var(--terracotta); }
+
+p.sub { color: var(--soft); font-size: .92rem; margin: 0 0 1.5rem; }
+
+form { display: flex; flex-direction: column; gap: .7rem; }
+
+input {
+    font: inherit;
+    padding: .85rem 1rem;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    text-align: center;
+    letter-spacing: .06em;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(193, 74, 43, .15);
+}
+
+button {
+    font: inherit;
+    font-weight: 600;
+    padding: .85rem 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--paper);
+    background: var(--terracotta);
+    transition: background .2s;
+}
+
+button:hover { background: var(--terra-deep); }
+
+button:disabled { opacity: .65; cursor: wait; }
+
+.err { color: #9c2020; font-size: .85rem; min-height: 1.15em; margin: .1rem 0 0; }
