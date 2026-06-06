@@ -626,6 +626,38 @@
     body.stars-active::before { opacity: .15; }
     body.stars-active::after { background: radial-gradient(120% 90% at 50% -10%, transparent 55%, rgba(0,0,0,.4) 100%); }
 
+    /* ---------------- WORLD CUP FIXTURES ---------------- */
+    .wc-block {
+        margin-top: 1rem;
+        padding: .85rem 1rem .75rem;
+        border-top: 1px dashed var(--line);
+        background: linear-gradient(135deg, rgba(26,61,46,.07) 0%, rgba(52,66,31,.04) 100%);
+    }
+    .wc-block-label {
+        display: block;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: #1a4d35;
+        margin-bottom: .55rem;
+    }
+    .wc-block p {
+        margin: .35rem 0;
+        font-size: .9rem;
+        line-height: 1.4;
+    }
+    .wc-block p:last-child { margin-bottom: 0; }
+    .wc-block .wc-stage {
+        font-weight: 600;
+        color: var(--olive-deep);
+    }
+    .wc-block em {
+        font-style: normal;
+        color: var(--ink-soft);
+        font-size: .88rem;
+    }
+
     /* ---------------- STARS BAR (itinerary days) ---------------- */
     .stars-bar {
         display: flex;
