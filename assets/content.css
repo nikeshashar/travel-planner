@@ -188,14 +188,42 @@
     .section-head:first-of-type { margin-top: 0; }
 
     /* ---------------- COUNTDOWN ---------------- */
+    .countdowns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: clamp(2rem, 5vw, 3rem);
+    }
     .countdown {
         text-align: center;
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: 14px;
-        padding: clamp(1.5rem, 4vw, 2.2rem);
-        margin-bottom: clamp(2rem, 5vw, 3rem);
+        padding: clamp(1.3rem, 3.5vw, 1.9rem);
         box-shadow: var(--shadow);
+    }
+    .countdown--g1 { border-top: 3px solid var(--terracotta); }
+    .countdown--g2 { border-top: 3px solid var(--olive); }
+    .countdown-gtag {
+        display: inline-block;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: var(--paper);
+        padding: .35rem .7rem;
+        border-radius: 100px;
+        margin-bottom: .45rem;
+    }
+    .countdown--g1 .countdown-gtag { background: var(--terracotta); }
+    .countdown--g2 .countdown-gtag { background: var(--olive); }
+    .countdown-party {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: .92rem;
+        color: var(--ink-soft);
+        margin: 0 0 .7rem;
+        line-height: 1.3;
     }
     .countdown-label {
         font-size: .72rem;
@@ -203,8 +231,9 @@
         letter-spacing: .18em;
         text-transform: uppercase;
         color: var(--terracotta);
-        margin: 0 0 1.1rem;
+        margin: 0 0 .55rem;
     }
+    .countdown--g2 .countdown-label { color: var(--olive); }
     .countdown-units {
         display: flex;
         justify-content: center;
@@ -238,6 +267,7 @@
         font-style: italic;
         color: var(--terracotta);
     }
+    .countdown--g2.done .countdown-num { color: var(--olive); }
     .section-head .num {
         font-family: var(--serif);
         font-style: italic;
@@ -927,6 +957,7 @@
 
     @media (max-width: 640px) {
         .grid-2 { grid-template-columns: 1fr; }
+        .countdowns { grid-template-columns: 1fr; }
         .section-head::after { display: none; }
         .ticket-route .code { font-size: 2rem; }
         .stars-bar-text em { display: none; }

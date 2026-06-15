@@ -48,30 +48,35 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
 })();
 
 (function () {
-    const target = new Date('2026-07-06T00:00:00');
-    const el = document.getElementById('countdown');
-    const daysEl = document.getElementById('cd-days');
-    const hoursEl = document.getElementById('cd-hours');
-    const minsEl = document.getElementById('cd-mins');
-    const secsEl = document.getElementById('cd-secs');
     const pad = (n) => String(n).padStart(2, '0');
 
-    function tick() {
-        const diff = target - Date.now();
-        if (diff <= 0) {
-            el.classList.add('done');
-            el.querySelector('.countdown-label').textContent = 'The adventure begins';
-            el.querySelector('.countdown-units').innerHTML =
-                '<span class="countdown-num">Bon voyage!</span>';
-            return;
-        }
-        const totalSecs = Math.floor(diff / 1000);
-        daysEl.textContent = pad(Math.floor(totalSecs / 86400));
-        hoursEl.textContent = pad(Math.floor((totalSecs % 86400) / 3600));
-        minsEl.textContent = pad(Math.floor((totalSecs % 3600) / 60));
-        secsEl.textContent = pad(totalSecs % 60);
-    }
+    document.querySelectorAll('.countdown[data-target]').forEach((el) => {
+        const target = new Date(el.dataset.target);
+        const doneMsg = el.dataset.done || 'Bon voyage!';
+        const units = {
+            days: el.querySelector('[data-unit="days"]'),
+            hours: el.querySelector('[data-unit="hours"]'),
+            mins: el.querySelector('[data-unit="mins"]'),
+            secs: el.querySelector('[data-unit="secs"]'),
+        };
 
-    tick();
-    setInterval(tick, 1000);
+        function tick() {
+            const diff = target - Date.now();
+            if (diff <= 0) {
+                el.classList.add('done');
+                el.querySelector('.countdown-label').textContent = 'Departed';
+                el.querySelector('.countdown-units').innerHTML =
+                    `<span class="countdown-num">${doneMsg}</span>`;
+                return;
+            }
+            const totalSecs = Math.floor(diff / 1000);
+            units.days.textContent = pad(Math.floor(totalSecs / 86400));
+            units.hours.textContent = pad(Math.floor((totalSecs % 86400) / 3600));
+            units.mins.textContent = pad(Math.floor((totalSecs % 3600) / 60));
+            units.secs.textContent = pad(totalSecs % 60);
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    });
 })();
