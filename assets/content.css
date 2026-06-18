@@ -594,6 +594,56 @@
     }
     ul.packing-list li:hover::after { opacity: 1; }
 
+    /* ---------------- BAGGAGE ---------------- */
+    .baggage-card {
+        margin-top: clamp(1rem, 3vw, 1.75rem);
+        margin-bottom: clamp(2.5rem, 6vw, 4rem);
+    }
+    .baggage-cols {
+        gap: clamp(1.25rem, 3vw, 2rem);
+    }
+    .baggage-cols .pack-group + .pack-group {
+        border-left: 1px dashed var(--line);
+        padding-left: clamp(1rem, 3vw, 1.75rem);
+    }
+    .baggage-card .pack-group { margin-bottom: 0; }
+    .baggage-card .pack-group h3 {
+        font-size: 1.05rem;
+        margin-bottom: .55rem;
+    }
+    ul.baggage-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 .4rem;
+    }
+    ul.baggage-list li {
+        position: relative;
+        padding-left: 1.1rem;
+        margin-bottom: .45rem;
+        font-size: .96rem;
+        line-height: 1.45;
+    }
+    ul.baggage-list li::before {
+        content: "·";
+        position: absolute;
+        left: 0;
+        color: var(--terracotta);
+        font-weight: 700;
+    }
+    ul.baggage-list--pick {
+        margin-left: .5rem;
+        margin-bottom: 0;
+    }
+    .baggage-pick {
+        margin: .6rem 0 .35rem;
+        font-size: .9rem;
+        color: var(--ink-soft);
+    }
+    .dims {
+        color: var(--ink-soft);
+        font-size: .9em;
+    }
+
     /* ---------------- ALERT ---------------- */
     .alert-box {
         position: relative;
@@ -957,6 +1007,13 @@
 
     @media (max-width: 640px) {
         .grid-2 { grid-template-columns: 1fr; }
+        .baggage-cols { grid-template-columns: 1fr 1fr; }
+        .baggage-cols .pack-group + .pack-group {
+            border-left: none;
+            padding-left: 0;
+            border-top: 1px dashed var(--line);
+            padding-top: clamp(1rem, 3vw, 1.25rem);
+        }
         .countdowns { grid-template-columns: 1fr; }
         .section-head::after { display: none; }
         .ticket-route .code { font-size: 2rem; }
