@@ -520,6 +520,41 @@
         gap: .3rem .8rem;
         margin-bottom: .7rem;
     }
+    .day .meta .date,
+    .day .meta .gtag { order: 0; }
+    .day .meta .day-temp {
+        order: 1;
+        margin-left: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        line-height: 1;
+        color: var(--terracotta);
+    }
+    .day-temp-ic {
+        display: inline-flex;
+        width: 1.45rem;
+        height: 1.45rem;
+        flex: 0 0 auto;
+    }
+    .day-temp-ic--clear { color: var(--ochre); }
+    .day-temp-ic--partly { color: var(--ochre); }
+    .day-temp-ic--overcast { color: var(--ink-soft); }
+    .day-temp-ic--fog { color: var(--ink-soft); }
+    .day-temp-ic--drizzle,
+    .day-temp-ic--rain { color: var(--olive); }
+    .day-temp-ic--storm { color: var(--terracotta); }
+    .day-temp-ic svg {
+        width: 100%;
+        height: 100%;
+    }
+    .day-temp-val {
+        font-family: var(--serif);
+        font-size: clamp(1.15rem, 3.2vw, 1.5rem);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .day .meta h3 { order: 2; }
     .day .date {
         font-size: .72rem;
         font-weight: 700;
