@@ -22,4 +22,9 @@ create policy "shopping_items_update"
     on public.shopping_items for update
     using (true);
 
+create policy "shopping_items_delete"
+    on public.shopping_items for delete
+    using (true);
+
 -- Dashboard → Database → Replication → enable Realtime for shopping_items.
+-- Or: alter publication supabase_realtime add table public.shopping_items;

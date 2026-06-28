@@ -455,6 +455,22 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         render();
     }
 
+    async function deleteItem(id) {
+        if (!items[id]) return;
+
+        if (shared) {
+            const res = await fetch(
+                SUPABASE_URL + '/rest/v1/' + TABLE + '?id=eq.' + encodeURIComponent(id),
+                { method: 'DELETE', headers: sbHeaders() }
+            );
+            if (!res.ok) throw new Error('delete failed');
+        }
+
+        delete items[id];
+        if (!shared) saveLocal(items);
+        render();
+    }
+
     function createRow(item, isBought) {
         const li = document.createElement('li');
         li.className = 'shop-item' + (isBought ? ' shop-item--bought' : '');
@@ -485,6 +501,25 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
 
         label.append(cb, span);
         li.appendChild(label);
+
+        if (!isBought) {
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.className = 'shop-item-delete';
+            del.setAttribute('aria-label', `Remove ${item.text}`);
+            del.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12zM10 11v5M14 11v5"/></svg>';
+            del.addEventListener('click', async () => {
+                del.disabled = true;
+                try {
+                    await deleteItem(item.id);
+                } catch (_) {
+                    setStatus('Could not remove that item — try again.', true);
+                    del.disabled = false;
+                }
+            });
+            li.appendChild(del);
+        }
+
         return li;
     }
 
