@@ -1,0 +1,65 @@
+<div id="page-shopping" class="page" data-supabase-url="https://rbohpmwfrlgswmujtvmt.supabase.co"
+    data-supabase-anon-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJib2hwbXdmcmxnc3dtdWp0dm10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTM4MDAsImV4cCI6MjA5ODE2OTgwMH0.U9ttadx3qPxYpdsZSagTKZbjE4B2DC5d_mQWr3FyOHU">
+    <header class="shop-hero">
+        <span class="shop-pattern" aria-hidden="true"></span>
+        <div class="hero-inner">
+            <span class="kicker reveal-h d1">Villa Provisions · Été 2026</span>
+            <h1 class="reveal-h d2">Shared<br><em>Shopping List</em></h1>
+            <div class="hero-meta reveal-h d3">
+                <span>Add what we need</span>
+                <span class="dot">◆</span>
+                <span>Check off when bought</span>
+                <span class="dot">◆</span>
+                <span>Everyone can edit</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="shop-nav">
+        <div class="nav-track">
+            <a href="#overview" class="shop-back">← Itinerary</a>
+            <a href="#shopping-add">Add item</a>
+            <a href="#shopping-list">To buy</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="card shop-intro" id="shopping-add">
+            <span class="label">For the Group</span>
+            <p class="shop-note" id="shopping-status" role="status"></p>
+
+            <form id="shopping-form" class="shop-form">
+                <label class="visually-hidden" for="shopping-input">Item to add</label>
+                <input id="shopping-input" type="text" name="item" placeholder="e.g. Olive oil, crisps, sun cream…"
+                    autocomplete="off" maxlength="200" required>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+
+        <div class="shop-panel" id="shopping-list">
+            <div class="shop-panel-head">
+                <h3>To buy</h3>
+                <button type="button" id="shopping-show-bought" class="shop-toggle" aria-pressed="false">
+                    Show purchased (<span id="shopping-bought-count">0</span>)
+                </button>
+            </div>
+
+            <p class="shop-empty" id="shopping-empty" hidden>Nothing on the list yet — add the first item above.</p>
+
+            <ul class="shop-list" id="shopping-list-active" aria-label="Items to buy"></ul>
+
+            <div class="shop-bought-wrap" id="shopping-bought-section" hidden>
+                <h4 class="shop-bought-title">Purchased</h4>
+                <ul class="shop-list shop-list--bought" id="shopping-bought-list" aria-label="Purchased items"></ul>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <a href="#overview">← Back to Itinerary</a>
+        <span class="sep">✦</span>
+        Bon appétit
+    </footer>
+</div>

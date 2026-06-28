@@ -23,6 +23,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 let html = readFileSync(join(here, 'src', 'content.html'), 'utf8');
 const stars = readFileSync(join(here, 'src', 'stargazing.html'), 'utf8');
 html = html.replace('<!-- STARGAZING -->', stars);
+const shopping = readFileSync(join(here, 'src', 'shopping.html'), 'utf8');
+html = html.replace('<!-- SHOPPING -->', shopping);
 const content = Buffer.from(html, 'utf8');
 const gateTemplate = readFileSync(join(here, 'src', 'gate.html'), 'utf8');
 

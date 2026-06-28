@@ -11,21 +11,24 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
 (function () {
     const itinerary = document.getElementById('page-itinerary');
     const stargazing = document.getElementById('page-stargazing');
+    const shopping = document.getElementById('page-shopping');
     const TITLES = {
         itinerary: 'Gourdon Villa Trip — Summer 2026',
         stargazing: 'Night Sky — Gourdon Villa 2026',
+        shopping: 'Shopping List — Gourdon Villa 2026',
     };
 
     function showPage(name) {
-        const onStars = name === 'stargazing';
-        itinerary.classList.toggle('is-active', !onStars);
-        stargazing.classList.toggle('is-active', onStars);
-        document.body.classList.toggle('stars-active', onStars);
-        document.title = TITLES[name];
+        itinerary?.classList.toggle('is-active', name === 'itinerary');
+        stargazing?.classList.toggle('is-active', name === 'stargazing');
+        shopping?.classList.toggle('is-active', name === 'shopping');
+        document.body.classList.toggle('stars-active', name === 'stargazing');
+        document.body.classList.toggle('shopping-active', name === 'shopping');
+        document.title = TITLES[name] || TITLES.itinerary;
     }
 
     function scrollToHash(id) {
-        if (!id || id === 'stars') {
+        if (!id || id === 'stars' || id === 'shopping') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
@@ -37,6 +40,11 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         const hash = location.hash.slice(1);
         if (hash === 'stars' || hash.startsWith('stars-jul-')) {
             showPage('stargazing');
+            requestAnimationFrame(() => scrollToHash(hash));
+            return;
+        }
+        if (hash === 'shopping' || hash.startsWith('shopping-')) {
+            showPage('shopping');
             requestAnimationFrame(() => scrollToHash(hash));
             return;
         }
@@ -262,4 +270,288 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
     }
 
     loadTemps().then(render).catch(() => {});
+})();
+
+(function () {
+    const page = document.getElementById('page-shopping');
+    if (!page) return;
+
+    const form = page.querySelector('#shopping-form');
+    const input = page.querySelector('#shopping-input');
+    const listEl = page.querySelector('#shopping-list-active');
+    const boughtListEl = page.querySelector('#shopping-bought-list');
+    const boughtSection = page.querySelector('#shopping-bought-section');
+    const showBoughtBtn = page.querySelector('#shopping-show-bought');
+    const emptyEl = page.querySelector('#shopping-empty');
+    const statusEl = page.querySelector('#shopping-status');
+    const countEl = page.querySelector('#shopping-bought-count');
+    const addBtn = form?.querySelector('button[type="submit"]');
+
+    const SUPABASE_URL = (page.dataset.supabaseUrl || '').replace(/\/$/, '');
+    const SUPABASE_KEY = page.dataset.supabaseAnonKey || '';
+    const TABLE = 'shopping_items';
+    const LOCAL_KEY = 'gourdon-shopping-v1';
+    const shared = !!(SUPABASE_URL && SUPABASE_KEY);
+
+    let items = {};
+    let showBought = false;
+    let pollTimer = null;
+    let realtimeChannel = null;
+    let busy = false;
+
+    function itemList() {
+        return Object.entries(items)
+            .filter(([, item]) => item && typeof item.text === 'string')
+            .map(([id, item]) => ({ id, ...item }))
+            .sort((a, b) => (a.addedAt || 0) - (b.addedAt || 0));
+    }
+
+    function setStatus(msg, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.classList.toggle('shop-note--err', !!isError);
+    }
+
+    function sbHeaders(extra) {
+        return {
+            apikey: SUPABASE_KEY,
+            Authorization: 'Bearer ' + SUPABASE_KEY,
+            ...(extra || {}),
+        };
+    }
+
+    function rowToItem(row) {
+        return {
+            text: row.text,
+            bought: row.bought,
+            addedAt: row.added_at,
+            boughtAt: row.bought_at,
+        };
+    }
+
+    function rowsToMap(rows) {
+        const map = {};
+        rows.forEach((row) => {
+            map[row.id] = rowToItem(row);
+        });
+        return map;
+    }
+
+    async function loadRemote() {
+        const url = SUPABASE_URL + '/rest/v1/' + TABLE + '?select=*&order=added_at.asc';
+        const res = await fetch(url, { headers: sbHeaders() });
+        if (!res.ok) throw new Error('load failed');
+        const rows = await res.json();
+        return Array.isArray(rows) ? rowsToMap(rows) : {};
+    }
+
+    function loadLocal() {
+        try {
+            const raw = localStorage.getItem(LOCAL_KEY);
+            const data = raw ? JSON.parse(raw) : {};
+            return data && typeof data === 'object' ? data : {};
+        } catch (_) {
+            return {};
+        }
+    }
+
+    function saveLocal(data) {
+        try {
+            localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+        } catch (_) { /* storage full or blocked */ }
+    }
+
+    async function connectRealtime() {
+        if (!shared) return;
+        try {
+            const mod = await import('https://esm.sh/@supabase/supabase-js@2');
+            const client = mod.createClient(SUPABASE_URL, SUPABASE_KEY);
+            realtimeChannel = client
+                .channel('shopping-list')
+                .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => {
+                    refresh();
+                })
+                .subscribe();
+        } catch (_) {
+            /* polling still keeps the list in sync */
+        }
+    }
+
+    async function refresh() {
+        if (busy) return;
+        try {
+            items = shared ? await loadRemote() : loadLocal();
+            render();
+            if (shared) setStatus('Shared list — changes sync for everyone.');
+        } catch (_) {
+            setStatus('Could not sync the list — will retry shortly.', true);
+        }
+    }
+
+    async function addItem(text) {
+        const trimmed = text.trim();
+        if (!trimmed) return;
+
+        if (shared) {
+            const res = await fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {
+                method: 'POST',
+                headers: sbHeaders({
+                    'Content-Type': 'application/json',
+                    Prefer: 'return=representation',
+                }),
+                body: JSON.stringify({
+                    text: trimmed,
+                    bought: false,
+                    added_at: Date.now(),
+                    bought_at: null,
+                }),
+            });
+            if (!res.ok) throw new Error('add failed');
+            const rows = await res.json();
+            const row = rows[0];
+            items[row.id] = rowToItem(row);
+        } else {
+            const id = crypto.randomUUID();
+            items[id] = {
+                text: trimmed,
+                bought: false,
+                addedAt: Date.now(),
+                boughtAt: null,
+            };
+            saveLocal(items);
+        }
+        render();
+    }
+
+    async function setBought(id, bought) {
+        const existing = items[id];
+        if (!existing) return;
+
+        const patch = {
+            bought,
+            boughtAt: bought ? Date.now() : null,
+        };
+
+        if (shared) {
+            const res = await fetch(
+                SUPABASE_URL + '/rest/v1/' + TABLE + '?id=eq.' + encodeURIComponent(id),
+                {
+                    method: 'PATCH',
+                    headers: sbHeaders({
+                        'Content-Type': 'application/json',
+                        Prefer: 'return=representation',
+                    }),
+                    body: JSON.stringify({
+                        bought,
+                        bought_at: patch.boughtAt,
+                    }),
+                }
+            );
+            if (!res.ok) throw new Error('update failed');
+        }
+
+        items[id] = { ...existing, ...patch };
+        if (!shared) saveLocal(items);
+        render();
+    }
+
+    function createRow(item, isBought) {
+        const li = document.createElement('li');
+        li.className = 'shop-item' + (isBought ? ' shop-item--bought' : '');
+
+        const label = document.createElement('label');
+        label.className = 'shop-item-label';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = isBought;
+        cb.className = 'shop-item-check';
+        cb.setAttribute('aria-label', isBought ? `Mark ${item.text} as not bought` : `Mark ${item.text} as bought`);
+        cb.addEventListener('change', async () => {
+            cb.disabled = true;
+            try {
+                await setBought(item.id, cb.checked);
+            } catch (_) {
+                cb.checked = !cb.checked;
+                setStatus('Could not update that item — try again.', true);
+            } finally {
+                cb.disabled = false;
+            }
+        });
+
+        const span = document.createElement('span');
+        span.className = 'shop-item-text';
+        span.textContent = item.text;
+
+        label.append(cb, span);
+        li.appendChild(label);
+        return li;
+    }
+
+    function render() {
+        const all = itemList();
+        const pending = all.filter((i) => !i.bought);
+        const bought = all.filter((i) => i.bought);
+
+        listEl.innerHTML = '';
+        boughtListEl.innerHTML = '';
+
+        emptyEl.hidden = pending.length > 0;
+
+        pending.forEach((item) => {
+            listEl.appendChild(createRow(item, false));
+        });
+
+        bought.forEach((item) => {
+            boughtListEl.appendChild(createRow(item, true));
+        });
+
+        countEl.textContent = String(bought.length);
+        showBoughtBtn.setAttribute('aria-pressed', showBought ? 'true' : 'false');
+        showBoughtBtn.classList.toggle('is-on', showBought);
+        boughtSection.hidden = !showBought || bought.length === 0;
+        showBoughtBtn.disabled = bought.length === 0;
+    }
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = input.value;
+        if (!text.trim()) return;
+
+        busy = true;
+        addBtn.disabled = true;
+        try {
+            await addItem(text);
+            input.value = '';
+            input.focus();
+            if (!shared) setStatus('Saved on this device only. Add Supabase credentials to share with the group.');
+        } catch (_) {
+            setStatus('Could not add that item — try again.', true);
+        } finally {
+            busy = false;
+            addBtn.disabled = false;
+        }
+    });
+
+    showBoughtBtn?.addEventListener('click', () => {
+        showBought = !showBought;
+        render();
+    });
+
+    if (shared) {
+        refresh().then(connectRealtime);
+        pollTimer = window.setInterval(refresh, 30000);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refresh();
+        });
+    } else {
+        items = loadLocal();
+        render();
+        setStatus('Saved on this device only. Add Supabase credentials to share with the group.');
+    }
+
+    window.addEventListener('pagehide', () => {
+        if (pollTimer) window.clearInterval(pollTimer);
+        realtimeChannel?.unsubscribe();
+    });
 })();
