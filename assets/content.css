@@ -1094,10 +1094,28 @@
         flex: 1;
         font-size: 1rem;
         line-height: 1.35;
+        cursor: text;
     }
     .shop-item--bought .shop-item-text {
         text-decoration: line-through;
         color: var(--ink-soft);
+    }
+    .shop-item-edit {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+        padding: .2rem .4rem;
+        border: 1px solid var(--olive);
+        border-radius: 6px;
+        background: var(--paper);
+        font: inherit;
+        font-size: 1rem;
+        color: var(--ink);
+        line-height: 1.35;
+    }
+    .shop-item-edit:focus {
+        outline: 2px solid rgba(74,90,54,.35);
+        outline-offset: 1px;
     }
     .shop-item-delete {
         flex: 0 0 auto;

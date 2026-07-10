@@ -282,6 +282,7 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
     const boughtListEl = page.querySelector('#shopping-bought-list');
     const boughtSection = page.querySelector('#shopping-bought-section');
     const showBoughtBtn = page.querySelector('#shopping-show-bought');
+    const showBoughtLabel = page.querySelector('#shopping-show-bought-label');
     const emptyEl = page.querySelector('#shopping-empty');
     const statusEl = page.querySelector('#shopping-status');
     const countEl = page.querySelector('#shopping-bought-count');
@@ -629,6 +630,97 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         render();
     }
 
+    async function renameItem(id, text) {
+        const existing = items[id];
+        if (!existing) return;
+
+        const trimmed = text.trim();
+        if (!trimmed || trimmed === existing.text) return;
+
+        if (shared) {
+            const res = await fetch(
+                SUPABASE_URL + '/rest/v1/' + TABLE + '?id=eq.' + encodeURIComponent(id),
+                {
+                    method: 'PATCH',
+                    headers: sbHeaders({
+                        'Content-Type': 'application/json',
+                        Prefer: 'return=representation',
+                    }),
+                    body: JSON.stringify({ text: trimmed }),
+                }
+            );
+            if (!res.ok) throw new Error('rename failed');
+        }
+
+        items[id] = { ...existing, text: trimmed };
+        if (!shared) saveLocal(items);
+        render();
+    }
+
+    function startEdit(item, span) {
+        if (span.dataset.editing === '1') return;
+        span.dataset.editing = '1';
+
+        const inputEl = document.createElement('input');
+        inputEl.type = 'text';
+        inputEl.className = 'shop-item-edit';
+        inputEl.value = item.text;
+        inputEl.maxLength = 200;
+        inputEl.setAttribute('aria-label', `Edit ${item.text}`);
+
+        span.replaceWith(inputEl);
+        inputEl.focus();
+        inputEl.select();
+
+        let finished = false;
+        async function finish(save) {
+            if (finished) return;
+            finished = true;
+            const next = inputEl.value.trim();
+            if (!save || !next || next === item.text) {
+                render();
+                return;
+            }
+            try {
+                await renameItem(item.id, next);
+            } catch (_) {
+                setStatus('Could not update that item — try again.', true);
+                render();
+            }
+        }
+
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                finish(true);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                finish(false);
+            }
+        });
+        inputEl.addEventListener('blur', () => finish(true));
+    }
+
+    function bindEditGesture(el, item, span) {
+        el.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            startEdit(item, span);
+        });
+
+        let lastTap = 0;
+        el.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTap < 350) {
+                e.preventDefault();
+                startEdit(item, span);
+                lastTap = 0;
+            } else {
+                lastTap = now;
+            }
+        }, { passive: false });
+    }
+
     function createRow(item, isBought) {
         const li = document.createElement('li');
         li.className = 'shop-item' + (isBought ? ' shop-item--bought' : '');
@@ -656,6 +748,8 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         const span = document.createElement('span');
         span.className = 'shop-item-text';
         span.textContent = item.text;
+        span.title = 'Double-click or double-tap to edit';
+        bindEditGesture(span, item, span);
 
         label.append(cb, span);
         li.appendChild(label);
@@ -724,6 +818,9 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         });
 
         countEl.textContent = String(bought.length);
+        if (showBoughtLabel) {
+            showBoughtLabel.textContent = showBought ? 'Hide purchased' : 'Show purchased';
+        }
         showBoughtBtn.setAttribute('aria-pressed', showBought ? 'true' : 'false');
         showBoughtBtn.classList.toggle('is-on', showBought);
         boughtSection.hidden = !showBought || bought.length === 0;
