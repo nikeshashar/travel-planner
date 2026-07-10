@@ -725,14 +725,15 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         const li = document.createElement('li');
         li.className = 'shop-item' + (isBought ? ' shop-item--bought' : '');
 
-        const label = document.createElement('label');
-        label.className = 'shop-item-label';
+        const row = document.createElement('div');
+        row.className = 'shop-item-main';
 
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = isBought;
         cb.className = 'shop-item-check';
         cb.setAttribute('aria-label', isBought ? `Mark ${item.text} as not bought` : `Mark ${item.text} as bought`);
+        cb.addEventListener('click', (e) => e.stopPropagation());
         cb.addEventListener('change', async () => {
             cb.disabled = true;
             try {
@@ -751,8 +752,8 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         span.title = 'Double-click or double-tap to edit';
         bindEditGesture(span, item, span);
 
-        label.append(cb, span);
-        li.appendChild(label);
+        row.append(cb, span);
+        li.appendChild(row);
 
         if (!isBought) {
             const del = document.createElement('button');

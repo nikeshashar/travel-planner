@@ -1074,14 +1074,13 @@
         opacity: .72;
         background: rgba(243,231,208,.55);
     }
-    .shop-item-label {
+    .shop-item-main {
         display: flex;
         align-items: center;
         gap: .85rem;
         flex: 1;
         min-width: 0;
         padding: .85rem 1rem;
-        cursor: pointer;
     }
     .shop-item-check {
         width: 1.15rem;
@@ -1092,9 +1091,12 @@
     }
     .shop-item-text {
         flex: 1;
+        min-width: 0;
         font-size: 1rem;
         line-height: 1.35;
         cursor: text;
+        user-select: none;
+        -webkit-user-select: none;
     }
     .shop-item--bought .shop-item-text {
         text-decoration: line-through;
