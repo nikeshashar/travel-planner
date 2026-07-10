@@ -293,6 +293,164 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
     const LOCAL_KEY = 'gourdon-shopping-v1';
     const shared = !!(SUPABASE_URL && SUPABASE_KEY);
 
+    // Aisle order follows a typical French supermarket walk.
+    const AISLES = [
+        {
+            id: 'produce',
+            label: 'Fruit & veg',
+            keywords: [
+                'apple', 'apples', 'avocado', 'avocadoes', 'avocados', 'banana', 'bananas', 'berry', 'berries',
+                'blueberry', 'blueberries', 'broccoli', 'cabbage', 'carrot', 'carrots', 'celery', 'cherry', 'cherries',
+                'courgette', 'courgettes', 'cucumber', 'cucumbers', 'fruit', 'fruits', 'garlic', 'grape', 'grapes',
+                'herb', 'herbs', 'kiwi', 'lemon', 'lemons', 'lettuce', 'lime', 'limes', 'mango', 'melon', 'mushroom',
+                'mushrooms', 'onion', 'onions', 'orange', 'oranges', 'peach', 'peaches', 'pear', 'pears', 'pepper',
+                'peppers', 'pineapple', 'potato', 'potatoes', 'raspberry', 'raspberries', 'salad', 'spinach',
+                'strawberry', 'strawberries', 'tomato', 'tomatoes', 'veg', 'vegetable', 'vegetables', 'zucchini',
+                'aubergine', 'basilic', 'carotte', 'carottes', 'champignon', 'champignons', 'citron', 'citrons',
+                'concombre', 'courgette', 'échalote', 'echalote', 'fraise', 'fraises', 'framboise', 'framboises',
+                'fruit', 'fruits', 'haricot', 'haricots', 'légume', 'legume', 'légumes', 'legumes', 'oignon',
+                'oignons', 'poire', 'poires', 'poireau', 'poireaux', 'pomme', 'pommes', 'pomme de terre',
+                'pommes de terre', 'raisin', 'raisins', 'salade', 'tomate', 'tomates',
+            ],
+        },
+        {
+            id: 'bakery',
+            label: 'Bakery',
+            keywords: [
+                'baguette', 'baguettes', 'bake', 'baked', 'bakery', 'bread', 'brioche', 'bun', 'buns', 'croissant',
+                'croissants', 'pastry', 'pastries', 'roll', 'rolls', 'sourdough', 'toast',
+                'boulangerie', 'pain', 'pains', 'viennoiserie', 'viennoiseries',
+            ],
+        },
+        {
+            id: 'meat',
+            label: 'Meat & fish',
+            keywords: [
+                'bacon', 'beef', 'burger', 'burgers', 'chicken', 'chorizo', 'cod', 'fish', 'ham', 'lamb', 'meat',
+                'mince', 'minced', 'pork', 'prawn', 'prawns', 'salmon', 'sausage', 'sausages', 'seafood', 'shrimp',
+                'steak', 'steaks', 'tuna', 'turkey',
+                'boeuf', 'bœuf', 'charcuterie', 'crevette', 'crevettes', 'jambon', 'poulet', 'poisson', 'porc',
+                'saucisse', 'saucisses', 'saucisson', 'thon', 'viande',
+            ],
+        },
+        {
+            id: 'dairy',
+            label: 'Dairy & eggs',
+            keywords: [
+                'butter', 'cheese', 'cream', 'creme', 'crème', 'dairy', 'egg', 'eggs', 'feta', 'milk', 'mozzarella',
+                'parmesan', 'ricotta', 'sour cream', 'yoghurt', 'yogurt', 'yoghurt', 'fromage blanc',
+                'beurre', 'crème fraîche', 'creme fraiche', 'fromage', 'lait', 'oeuf', 'œuf', 'oeufs', 'œufs',
+                'yaourt', 'yaourts',
+            ],
+        },
+        {
+            id: 'deli',
+            label: 'Deli & ready meals',
+            keywords: [
+                'antipasti', 'hummus', 'olives', 'pate', 'pâté', 'pesto', 'ready meal', 'ready meals', 'tapenade',
+                'traiteur',
+            ],
+        },
+        {
+            id: 'grocery',
+            label: 'Cupboard',
+            keywords: [
+                'beans', 'cereal', 'cereals', 'chickpea', 'chickpeas', 'couscous', 'flour', 'honey', 'jam',
+                'ketchup', 'lentil', 'lentils', 'mayo', 'mayonnaise', 'mustard', 'noodles', 'nutella', 'nuts',
+                'oats', 'oil', 'olive oil', 'pasta', 'peanut', 'peanuts', 'pepper', 'rice', 'salt', 'sauce',
+                'sauces', 'soup', 'spice', 'spices', 'stock', 'sugar', 'vinegar', 'wrap', 'wraps',
+                'farine', 'huile', 'huile d\'olive', 'moutarde', 'pâtes', 'pates', 'riz', 'sel', 'sucre',
+            ],
+        },
+        {
+            id: 'snacks',
+            label: 'Snacks & sweets',
+            keywords: [
+                'biscuit', 'biscuits', 'candy', 'chocolate', 'chocolates', 'chippies', 'chips', 'cookie', 'cookies',
+                'crisp', 'crisps', 'ice cream', 'popcorn', 'snack', 'snacks', 'sweet', 'sweets',
+                'bonbon', 'bonbons', 'chocolat', 'glace', 'gâteau', 'gateau', 'gâteaux', 'gateaux',
+            ],
+        },
+        {
+            id: 'drinks',
+            label: 'Drinks',
+            keywords: [
+                'beer', 'beers', 'cider', 'coffee', 'cola', 'drink', 'drinks', 'juice', 'lemonade', 'prosecco',
+                'soda', 'sparkling', 'tea', 'water', 'wine', 'wines',
+                'bière', 'biere', 'café', 'cafe', 'eau', 'jus', 'thé', 'the', 'vin',
+            ],
+        },
+        {
+            id: 'frozen',
+            label: 'Frozen',
+            keywords: [
+                'frozen', 'freezer', 'ice', 'ice cream',
+                'congelé', 'congele', 'surgelé', 'surgele', 'surgelés', 'surgeles',
+            ],
+        },
+        {
+            id: 'household',
+            label: 'Household',
+            keywords: [
+                'bin bag', 'bin bags', 'bleach', 'cleaning', 'detergent', 'dishwasher', 'foil', 'kitchen roll',
+                'laundry', 'napkin', 'napkins', 'paper towel', 'rubbish bag', 'sponge', 'sponges', 'toilet paper',
+                'washing up', 'cling film',
+                'éponge', 'eponge', 'lessive', 'papier toilette', 'sac poubelle',
+            ],
+        },
+        {
+            id: 'baby',
+            label: 'Baby',
+            keywords: [
+                'baby', 'babies', 'nappy', 'nappies', 'diaper', 'diapers', 'wipe', 'wipes', 'formula',
+                'bébé', 'bebe', 'couche', 'couches', 'lingette', 'lingettes',
+            ],
+        },
+        {
+            id: 'personal',
+            label: 'Personal care',
+            keywords: [
+                'aftersun', 'deodorant', 'lotion', 'medicine', 'paracetamol', 'plaster', 'plasters', 'shampoo',
+                'soap', 'sun cream', 'sunscreen', 'toothpaste', 'toothbrush',
+                'crème solaire', 'creme solaire', 'dentifrice', 'savon',
+            ],
+        },
+        {
+            id: 'bbq',
+            label: 'BBQ & outdoor',
+            keywords: [
+                'bbq', 'barbecue', 'charcoal', 'coal', 'firelighter', 'firelighters', 'grill', 'lighter',
+                'charbon',
+            ],
+        },
+        { id: 'other', label: 'Other', keywords: [] },
+    ];
+
+    function normalizeText(text) {
+        return String(text || '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/['’]/g, "'");
+    }
+
+    function categorizeItem(text) {
+        const hay = normalizeText(text);
+        let best = { id: 'other', score: 0 };
+
+        AISLES.forEach((aisle) => {
+            if (aisle.id === 'other') return;
+            aisle.keywords.forEach((keyword) => {
+                const needle = normalizeText(keyword);
+                if (!needle || !hay.includes(needle)) return;
+                const score = needle.length;
+                if (score > best.score) best = { id: aisle.id, score };
+            });
+        });
+
+        return best.id;
+    }
+
     let items = {};
     let showBought = false;
     let pollTimer = null;
@@ -533,8 +691,32 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
 
         emptyEl.hidden = pending.length > 0;
 
+        const byAisle = {};
         pending.forEach((item) => {
-            listEl.appendChild(createRow(item, false));
+            const aisleId = categorizeItem(item.text);
+            if (!byAisle[aisleId]) byAisle[aisleId] = [];
+            byAisle[aisleId].push(item);
+        });
+
+        AISLES.forEach((aisle) => {
+            const group = byAisle[aisle.id];
+            if (!group || !group.length) return;
+
+            const section = document.createElement('section');
+            section.className = 'shop-aisle';
+            section.dataset.aisle = aisle.id;
+
+            const heading = document.createElement('h4');
+            heading.className = 'shop-aisle-title';
+            heading.textContent = aisle.label;
+            section.appendChild(heading);
+
+            const ul = document.createElement('ul');
+            ul.className = 'shop-list';
+            ul.setAttribute('aria-label', aisle.label);
+            group.forEach((item) => ul.appendChild(createRow(item, false)));
+            section.appendChild(ul);
+            listEl.appendChild(section);
         });
 
         bought.forEach((item) => {
