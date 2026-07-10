@@ -18,12 +18,30 @@
     <nav class="shop-nav">
         <div class="nav-track">
             <a href="#overview" class="shop-back">← Itinerary</a>
-            <a href="#shopping-add">Add item</a>
             <a href="#shopping-list">To buy</a>
+            <a href="#shopping-add">Add item</a>
         </div>
     </nav>
 
     <div class="container">
+
+        <div class="shop-panel" id="shopping-list">
+            <div class="shop-panel-head">
+                <h3>To buy</h3>
+                <button type="button" id="shopping-show-bought" class="shop-toggle" aria-pressed="false">
+                    Show purchased (<span id="shopping-bought-count">0</span>)
+                </button>
+            </div>
+
+            <p class="shop-empty" id="shopping-empty" hidden>Nothing on the list yet — add the first item below.</p>
+
+            <ul class="shop-list" id="shopping-list-active" aria-label="Items to buy"></ul>
+
+            <div class="shop-bought-wrap" id="shopping-bought-section" hidden>
+                <h4 class="shop-bought-title">Purchased</h4>
+                <ul class="shop-list shop-list--bought" id="shopping-bought-list" aria-label="Purchased items"></ul>
+            </div>
+        </div>
 
         <div class="card shop-intro" id="shopping-add">
             <p class="shop-note" id="shopping-status" role="status"></p>
@@ -34,24 +52,6 @@
                     autocomplete="off" maxlength="200" required>
                 <button type="submit">Add</button>
             </form>
-        </div>
-
-        <div class="shop-panel" id="shopping-list">
-            <div class="shop-panel-head">
-                <h3>To buy</h3>
-                <button type="button" id="shopping-show-bought" class="shop-toggle" aria-pressed="false">
-                    Show purchased (<span id="shopping-bought-count">0</span>)
-                </button>
-            </div>
-
-            <p class="shop-empty" id="shopping-empty" hidden>Nothing on the list yet — add the first item above.</p>
-
-            <ul class="shop-list" id="shopping-list-active" aria-label="Items to buy"></ul>
-
-            <div class="shop-bought-wrap" id="shopping-bought-section" hidden>
-                <h4 class="shop-bought-title">Purchased</h4>
-                <ul class="shop-list shop-list--bought" id="shopping-bought-list" aria-label="Purchased items"></ul>
-            </div>
         </div>
 
     </div>

@@ -95,8 +95,8 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
     const TZ = 'Europe/Paris';
     const TRIP_START = '2026-07-06';
     const TRIP_END = '2026-07-17';
-    const CACHE_KEY = 'gourdon-weather-v3';
-    const CACHE_MS = 48 * 60 * 60 * 1000;
+    const CACHE_KEY = 'gourdon-weather-v4';
+    const CACHE_MS = 6 * 60 * 60 * 1000;
 
     const WX_SVG = {
         clear: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></g></svg>',

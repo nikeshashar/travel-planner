@@ -926,7 +926,7 @@
         padding-top: 2rem;
     }
 
-    .shop-intro { margin-bottom: 1.5rem; }
+    .shop-intro { margin-top: 1.5rem; margin-bottom: 0; }
     .shop-intro h3 {
         font-family: var(--serif);
         font-size: clamp(1.25rem, 4vw, 1.6rem);
