@@ -18,6 +18,38 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
         shopping: 'Shopping List — Gourdon Villa 2026',
     };
 
+    function parisDateISO() {
+        return new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Europe/Paris',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        }).format(new Date());
+    }
+
+    function tagItineraryDays() {
+        document.querySelectorAll('.day').forEach((day) => {
+            const n = parseInt(day.querySelector('.badge')?.textContent, 10);
+            if (!n) return;
+            day.dataset.date = `2026-07-${String(5 + n).padStart(2, '0')}`;
+        });
+    }
+
+    function markPastFlights() {
+        const today = parisDateISO();
+        document.querySelectorAll('.ticket-flight[data-flight-date]').forEach((el) => {
+            if (el.dataset.flightDate < today) el.classList.add('is-past');
+        });
+    }
+
+    function scrollToToday() {
+        const today = parisDateISO();
+        const day = document.querySelector(`.day[data-date="${today}"]`);
+        if (!day) return;
+        day.classList.add('is-today');
+        day.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function showPage(name) {
         itinerary?.classList.toggle('is-active', name === 'itinerary');
         stargazing?.classList.toggle('is-active', name === 'stargazing');
@@ -49,8 +81,15 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             return;
         }
         showPage('itinerary');
+        if (!hash) {
+            requestAnimationFrame(() => scrollToToday());
+        } else {
+            requestAnimationFrame(() => scrollToHash(hash));
+        }
     }
 
+    tagItineraryDays();
+    markPastFlights();
     window.addEventListener('hashchange', route);
     route();
 })();

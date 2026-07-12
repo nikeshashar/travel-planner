@@ -354,8 +354,19 @@
     .ticket-flight {
         padding: clamp(1.4rem, 3.5vw, 2rem);
         border-bottom: 2px dashed rgba(241,234,212,.35);
+        transition: opacity .25s, filter .25s;
     }
     .ticket-flight:last-child { border-bottom: none; }
+    .ticket-flight.is-past {
+        opacity: .42;
+        filter: grayscale(.55);
+    }
+    .ticket-flight.is-past .ticket-dir::after {
+        content: ' · flown';
+        letter-spacing: .12em;
+        font-weight: 600;
+        color: rgba(241,234,212,.55);
+    }
     .ticket-dir {
         font-size: .7rem;
         letter-spacing: .22em;
@@ -483,6 +494,7 @@
     }
     .day {
         position: relative;
+        scroll-margin-top: 4.5rem;
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: 14px;
@@ -491,9 +503,15 @@
         box-shadow: 14px 16px 36px -26px rgba(52,38,16,.5);
         opacity: 0;
         transform: translateY(26px);
-        transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);
+        transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1), border-color .25s, box-shadow .25s;
     }
     .day.in { opacity: 1; transform: none; }
+    .day.is-today {
+        opacity: 1;
+        transform: none;
+        border-color: var(--ochre);
+        box-shadow: 14px 16px 36px -26px rgba(157,58,32,.35), var(--shadow);
+    }
     .day .badge {
         position: absolute;
         left: calc(-1 * clamp(2.8rem, 8vw, 4.5rem));
