@@ -294,7 +294,7 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
     const LOCAL_KEY = 'gourdon-shopping-v1';
     const shared = !!(SUPABASE_URL && SUPABASE_KEY);
 
-    // Aisle order follows a typical French/UK supermarket walk.
+    // Aisle order follows a typical UK supermarket walk.
     const AISLES = [
         {
             id: 'produce',
@@ -315,8 +315,8 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'artichoke', 'asparagus', 'aubergine', 'aubergines', 'bean sprout', 'bean sprouts',
                 'beetroot', 'bell pepper', 'bok choy', 'broccoli', 'brussels sprout', 'brussels sprouts',
                 'butternut', 'butternut squash', 'cabbage', 'carrot', 'carrots', 'cauliflower',
-                'celeriac', 'celery', 'chard', 'chickory', 'chicory', 'chilli', 'chillies', 'chili',
-                'chillis', 'corn', 'corn on the cob', 'courgette', 'courgettes', 'cucumber', 'cucumbers',
+                'celeriac', 'celery', 'chard', 'chicory', 'chilli', 'chillies', 'chili', 'chillis',
+                'corn', 'corn on the cob', 'courgette', 'courgettes', 'cucumber', 'cucumbers',
                 'edamame', 'eggplant', 'endive', 'fennel', 'garlic', 'gherkin', 'gherkins',
                 'green bean', 'green beans', 'green pepper', 'kale', 'leek', 'leeks', 'lettuce',
                 'mangetout', 'marrow', 'mushroom', 'mushrooms', 'okra', 'onion', 'onions',
@@ -330,14 +330,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 // Herbs & salad bits
                 'basil', 'chive', 'chives', 'coriander', 'dill', 'herb', 'herbs', 'mint',
                 'oregano', 'parsley', 'rosemary', 'sage', 'salad things', 'tarragon', 'thyme',
-                // FR
-                'ail', 'asperge', 'asperges', 'aubergine', 'basilic', 'betterave', 'carotte', 'carottes',
-                'celeri', 'champignon', 'champignons', 'chou', 'citron', 'citrons', 'concombre',
-                'courgette', 'echalote', 'epinard', 'fraise', 'fraises', 'framboise', 'framboises',
-                'haricot vert', 'haricots verts', 'legume', 'legumes', 'mais', 'menthe', 'oignon',
-                'oignons', 'petit pois', 'petits pois', 'persil', 'poire', 'poires', 'poireau',
-                'poireaux', 'pois', 'poivron', 'poivrons', 'pomme', 'pommes', 'pomme de terre',
-                'pommes de terre', 'raisin', 'raisins', 'salade', 'tomate', 'tomates',
             ],
         },
         {
@@ -348,13 +340,10 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'bread', 'breads', 'bread roll', 'bread rolls', 'brioche', 'bun', 'buns',
                 'ciabatta', 'ciabattas', 'croissant', 'croissants', 'crumpet', 'crumpets',
                 'english muffin', 'flatbread', 'flatbreads', 'focaccia', 'garlic bread',
-                'loaf', 'loaves', 'muffin', 'muffins', 'naan', 'pain au chocolat', 'pastry',
-                'pastries', 'pitta', 'pittas', 'pita', 'pitas', 'pretzel', 'roll', 'rolls',
-                'rye bread', 'sourdough', 'tiger loaf', 'toast', 'toaster', 'tortilla', 'tortillas',
+                'loaf', 'loaves', 'muffin', 'muffins', 'naan', 'pastry', 'pastries',
+                'pitta', 'pittas', 'pita', 'pitas', 'pretzel', 'roll', 'rolls',
+                'rye bread', 'sourdough', 'tiger loaf', 'toast', 'tortilla', 'tortillas',
                 'wholemeal', 'wrap', 'wraps',
-                // FR
-                'boulangerie', 'croissant', 'ficelle', 'pain', 'pains', 'pain de mie',
-                'viennoiserie', 'viennoiseries',
             ],
         },
         {
@@ -365,11 +354,8 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'chorizo', 'cod', 'duck', 'fish', 'gammon', 'haddock', 'ham', 'lamb',
                 'lobster', 'mackerel', 'meat', 'mince', 'minced', 'mussels', 'pork',
                 'prawn', 'prawns', 'prosciutto', 'rotisserie', 'salmon', 'sardine', 'sardines',
-                'sausage', 'sausages', 'scallop', 'scallops', 'seafood', 'shrimp', 'steak',
-                'steaks', 'trout', 'tuna', 'turkey', 'veal',
-                // FR
-                'boeuf', 'charcuterie', 'crevette', 'crevettes', 'dinde', 'jambon', 'poulet',
-                'poisson', 'porc', 'roti', 'saucisse', 'saucisses', 'saucisson', 'thon', 'viande',
+                'sausage', 'sausages', 'saucisson', 'scallop', 'scallops', 'seafood', 'shrimp',
+                'steak', 'steaks', 'trout', 'tuna', 'turkey', 'veal',
             ],
         },
         {
@@ -378,12 +364,10 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             keywords: [
                 'brie', 'butter', 'camembert', 'cheddar', 'cheese', 'clotted cream', 'cream',
                 'creme', 'creme fraiche', 'dairy', 'double cream', 'egg', 'eggs', 'feta',
-                'fromage blanc',                 'goat cheese', 'gouda', 'greek yoghurt', 'halloumi',
+                'fromage blanc', 'goat cheese', 'gouda', 'greek yoghurt', 'halloumi',
                 'kefir', 'margarine', 'mascarpone', 'milk', 'mozzarella',
                 'oat milk', 'parmesan', 'pecorino', 'ricotta', 'semi skimmed', 'single cream',
                 'sour cream', 'uht', 'whipping cream', 'whole milk', 'yoghurt', 'yogurt',
-                // FR
-                'beurre', 'creme fraiche', 'fromage', 'lait', 'oeuf', 'oeufs', 'yaourt', 'yaourts',
             ],
         },
         {
@@ -393,8 +377,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'antipasti', 'coleslaw', 'cooked chicken', 'hummus', 'houmous', 'olives',
                 'pate', 'pesto', 'pickle', 'pickles', 'ready meal', 'ready meals',
                 'rotisserie chicken', 'tapenade', 'tzatziki',
-                // FR
-                'traiteur',
             ],
         },
         {
@@ -410,8 +392,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'quinoa', 'rice', 'salt', 'sauce', 'sauces', 'soup', 'spice', 'spices',
                 'stock', 'stock cube', 'stock cubes', 'sugar', 'tomato puree', 'vinegar',
                 'white pepper',
-                // FR
-                'farine', 'huile', 'moutarde', 'pates', 'riz', 'sel', 'sucre',
             ],
         },
         {
@@ -421,8 +401,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'biscuit', 'biscuits', 'candy', 'chocolate', 'chocolates', 'chippies', 'chips',
                 'cookie', 'cookies', 'crisp', 'crisps', 'dessert', 'desserts', 'popcorn',
                 'pretzel', 'snack', 'snacks', 'sweet', 'sweets',
-                // FR
-                'bonbon', 'bonbons', 'chocolat', 'gateau', 'gateaux', 'glace',
             ],
         },
         {
@@ -434,8 +412,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'non-alcoholic', 'non alcoholic', 'prosecco', 'red wine', 'soda',
                 'sparkling', 'stubbies', 'stubby', 'tea', 'tonic', 'tonic water',
                 'water', 'white wine', 'wine', 'wines',
-                // FR
-                'biere', 'cafe', 'eau', 'jus', 'the', 'vin',
             ],
         },
         {
@@ -444,8 +420,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             keywords: [
                 'frozen', 'freezer', 'ice cream', 'ice lolly', 'ice lollies', 'ice pop',
                 'ice pops',
-                // FR
-                'congele', 'surgele', 'surgeles',
             ],
         },
         {
@@ -457,8 +431,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'fly traps', 'foil', 'food bag', 'food bags', 'kitchen roll', 'laundry',
                 'napkin', 'napkins', 'paper towel', 'rubbish bag', 'sponge', 'sponges',
                 'toilet paper', 'toilet roll', 'tupperware', 'washing up', 'washing up liquid',
-                // FR
-                'eponge', 'lessive', 'papier toilette', 'sac poubelle',
             ],
         },
         {
@@ -468,8 +440,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'baby', 'babies', 'baby wipe', 'baby wipes', 'diaper', 'diapers',
                 'formula', 'nappy', 'nappies', 'nappy bag', 'nappy bags', 'nappy disposal',
                 'wipe', 'wipes',
-                // FR
-                'bebe', 'couche', 'couches', 'lingette', 'lingettes',
             ],
         },
         {
@@ -479,8 +449,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
                 'aftersun', 'calpol', 'deodorant', 'ibuprofen', 'lotion', 'medicine',
                 'nurofen', 'paracetamol', 'plaster', 'plasters', 'shampoo', 'soap',
                 'sun cream', 'sunscreen', 'toothbrush', 'toothpaste',
-                // FR
-                'creme solaire', 'dentifrice', 'savon',
             ],
         },
         {
@@ -489,8 +457,6 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             keywords: [
                 'bbq', 'barbecue', 'charcoal', 'coal', 'firelighter', 'firelighters',
                 'grill', 'lighter',
-                // FR
-                'charbon',
             ],
         },
         { id: 'other', label: 'Other', keywords: [] },
