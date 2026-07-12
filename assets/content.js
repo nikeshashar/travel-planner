@@ -294,61 +294,106 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
     const LOCAL_KEY = 'gourdon-shopping-v1';
     const shared = !!(SUPABASE_URL && SUPABASE_KEY);
 
-    // Aisle order follows a typical French supermarket walk.
+    // Aisle order follows a typical French/UK supermarket walk.
     const AISLES = [
         {
             id: 'produce',
             label: 'Fruit & veg',
             keywords: [
-                'apple', 'apples', 'avocado', 'avocadoes', 'avocados', 'banana', 'bananas', 'berry', 'berries',
-                'blueberry', 'blueberries', 'broccoli', 'cabbage', 'carrot', 'carrots', 'celery', 'cherry', 'cherries',
-                'courgette', 'courgettes', 'cucumber', 'cucumbers', 'fruit', 'fruits', 'garlic', 'grape', 'grapes',
-                'herb', 'herbs', 'kiwi', 'lemon', 'lemons', 'lettuce', 'lime', 'limes', 'mango', 'melon', 'mushroom',
-                'mushrooms', 'onion', 'onions', 'orange', 'oranges', 'peach', 'peaches', 'pear', 'pears', 'pepper',
-                'peppers', 'pineapple', 'potato', 'potatoes', 'raspberry', 'raspberries', 'salad', 'spinach',
-                'strawberry', 'strawberries', 'tomato', 'tomatoes', 'veg', 'vegetable', 'vegetables', 'zucchini',
-                'aubergine', 'basilic', 'carotte', 'carottes', 'champignon', 'champignons', 'citron', 'citrons',
-                'concombre', 'courgette', 'échalote', 'echalote', 'fraise', 'fraises', 'framboise', 'framboises',
-                'fruit', 'fruits', 'haricot', 'haricots', 'légume', 'legume', 'légumes', 'legumes', 'oignon',
-                'oignons', 'poire', 'poires', 'poireau', 'poireaux', 'pomme', 'pommes', 'pomme de terre',
+                // Fruit
+                'apple', 'apples', 'apricot', 'apricots', 'avocado', 'avocados', 'banana', 'bananas',
+                'berry', 'berries', 'blackberry', 'blackberries', 'blueberry', 'blueberries',
+                'cantaloupe', 'cherry', 'cherries', 'clementine', 'clementines', 'coconut',
+                'cranberry', 'cranberries', 'date', 'dates', 'fig', 'figs', 'fruit', 'fruits',
+                'grape', 'grapes', 'grapefruit', 'honeydew', 'kiwi', 'kiwis', 'lemon', 'lemons',
+                'lime', 'limes', 'lychee', 'mango', 'mangos', 'mangoes', 'melon', 'melons',
+                'nectarine', 'nectarines', 'orange', 'oranges', 'papaya', 'passion fruit',
+                'peach', 'peaches', 'pear', 'pears', 'pineapple', 'pineapples', 'plum', 'plums',
+                'pomegranate', 'raspberry', 'raspberries', 'strawberry', 'strawberries',
+                'tangerine', 'watermelon',
+                // Vegetables
+                'artichoke', 'asparagus', 'aubergine', 'aubergines', 'bean sprout', 'bean sprouts',
+                'beetroot', 'bell pepper', 'bok choy', 'broccoli', 'brussels sprout', 'brussels sprouts',
+                'butternut', 'butternut squash', 'cabbage', 'carrot', 'carrots', 'cauliflower',
+                'celeriac', 'celery', 'chard', 'chickory', 'chicory', 'chilli', 'chillies', 'chili',
+                'chillis', 'corn', 'corn on the cob', 'courgette', 'courgettes', 'cucumber', 'cucumbers',
+                'edamame', 'eggplant', 'endive', 'fennel', 'garlic', 'gherkin', 'gherkins',
+                'green bean', 'green beans', 'green pepper', 'kale', 'leek', 'leeks', 'lettuce',
+                'mangetout', 'marrow', 'mushroom', 'mushrooms', 'okra', 'onion', 'onions',
+                'pak choi', 'parsnip', 'parsnips', 'pea', 'peas', 'peppers',
+                'potato', 'potatoes', 'pumpkin', 'radish', 'radishes', 'red onion', 'red pepper',
+                'rocket', 'runner bean', 'runner beans', 'salad', 'shallot', 'shallots',
+                'spinach', 'spring onion', 'spring onions', 'sprout', 'sprouts', 'squash',
+                'sugar snap', 'sugar snaps', 'swede', 'sweet corn', 'sweetcorn', 'sweet potato',
+                'sweet potatoes', 'tomato', 'tomatoes', 'turnip', 'veg', 'vegetable', 'vegetables',
+                'watercress', 'yellow pepper', 'zucchini',
+                // Herbs & salad bits
+                'basil', 'chive', 'chives', 'coriander', 'dill', 'herb', 'herbs', 'mint',
+                'oregano', 'parsley', 'rosemary', 'sage', 'salad things', 'tarragon', 'thyme',
+                // FR
+                'ail', 'asperge', 'asperges', 'aubergine', 'basilic', 'betterave', 'carotte', 'carottes',
+                'celeri', 'champignon', 'champignons', 'chou', 'citron', 'citrons', 'concombre',
+                'courgette', 'echalote', 'epinard', 'fraise', 'fraises', 'framboise', 'framboises',
+                'haricot vert', 'haricots verts', 'legume', 'legumes', 'mais', 'menthe', 'oignon',
+                'oignons', 'petit pois', 'petits pois', 'persil', 'poire', 'poires', 'poireau',
+                'poireaux', 'pois', 'poivron', 'poivrons', 'pomme', 'pommes', 'pomme de terre',
                 'pommes de terre', 'raisin', 'raisins', 'salade', 'tomate', 'tomates',
             ],
         },
         {
             id: 'bakery',
-            label: 'Bakery',
+            label: 'Bread & bakery',
             keywords: [
-                'baguette', 'baguettes', 'bake', 'baked', 'bakery', 'bread', 'brioche', 'bun', 'buns', 'croissant',
-                'croissants', 'pastry', 'pastries', 'roll', 'rolls', 'sourdough', 'toast',
-                'boulangerie', 'pain', 'pains', 'viennoiserie', 'viennoiseries',
+                'bagel', 'bagels', 'baguette', 'baguettes', 'bake', 'baked', 'bakery', 'bloomer',
+                'bread', 'breads', 'bread roll', 'bread rolls', 'brioche', 'bun', 'buns',
+                'ciabatta', 'ciabattas', 'croissant', 'croissants', 'crumpet', 'crumpets',
+                'english muffin', 'flatbread', 'flatbreads', 'focaccia', 'garlic bread',
+                'loaf', 'loaves', 'muffin', 'muffins', 'naan', 'pain au chocolat', 'pastry',
+                'pastries', 'pitta', 'pittas', 'pita', 'pitas', 'pretzel', 'roll', 'rolls',
+                'rye bread', 'sourdough', 'tiger loaf', 'toast', 'toaster', 'tortilla', 'tortillas',
+                'wholemeal', 'wrap', 'wraps',
+                // FR
+                'boulangerie', 'croissant', 'ficelle', 'pain', 'pains', 'pain de mie',
+                'viennoiserie', 'viennoiseries',
             ],
         },
         {
             id: 'meat',
             label: 'Meat & fish',
             keywords: [
-                'bacon', 'beef', 'burger', 'burgers', 'chicken', 'chorizo', 'cod', 'fish', 'ham', 'lamb', 'meat',
-                'mince', 'minced', 'pork', 'prawn', 'prawns', 'salmon', 'sausage', 'sausages', 'seafood', 'shrimp',
-                'steak', 'steaks', 'tuna', 'turkey',
-                'boeuf', 'bœuf', 'charcuterie', 'crevette', 'crevettes', 'jambon', 'poulet', 'poisson', 'porc',
-                'saucisse', 'saucisses', 'saucisson', 'thon', 'viande',
+                'anchovy', 'anchovies', 'bacon', 'beef', 'burger', 'burgers', 'chicken',
+                'chorizo', 'cod', 'duck', 'fish', 'gammon', 'haddock', 'ham', 'lamb',
+                'lobster', 'mackerel', 'meat', 'mince', 'minced', 'mussels', 'pork',
+                'prawn', 'prawns', 'prosciutto', 'rotisserie', 'salmon', 'sardine', 'sardines',
+                'sausage', 'sausages', 'scallop', 'scallops', 'seafood', 'shrimp', 'steak',
+                'steaks', 'trout', 'tuna', 'turkey', 'veal',
+                // FR
+                'boeuf', 'charcuterie', 'crevette', 'crevettes', 'dinde', 'jambon', 'poulet',
+                'poisson', 'porc', 'roti', 'saucisse', 'saucisses', 'saucisson', 'thon', 'viande',
             ],
         },
         {
             id: 'dairy',
             label: 'Dairy & eggs',
             keywords: [
-                'butter', 'cheese', 'cream', 'creme', 'crème', 'dairy', 'egg', 'eggs', 'feta', 'milk', 'mozzarella',
-                'parmesan', 'ricotta', 'sour cream', 'yoghurt', 'yogurt', 'yoghurt', 'fromage blanc',
-                'beurre', 'crème fraîche', 'creme fraiche', 'fromage', 'lait', 'oeuf', 'œuf', 'oeufs', 'œufs',
-                'yaourt', 'yaourts',
+                'brie', 'butter', 'camembert', 'cheddar', 'cheese', 'clotted cream', 'cream',
+                'creme', 'creme fraiche', 'dairy', 'double cream', 'egg', 'eggs', 'feta',
+                'fromage blanc',                 'goat cheese', 'gouda', 'greek yoghurt', 'halloumi',
+                'kefir', 'margarine', 'mascarpone', 'milk', 'mozzarella',
+                'oat milk', 'parmesan', 'pecorino', 'ricotta', 'semi skimmed', 'single cream',
+                'sour cream', 'uht', 'whipping cream', 'whole milk', 'yoghurt', 'yogurt',
+                // FR
+                'beurre', 'creme fraiche', 'fromage', 'lait', 'oeuf', 'oeufs', 'yaourt', 'yaourts',
             ],
         },
         {
             id: 'deli',
             label: 'Deli & ready meals',
             keywords: [
-                'antipasti', 'hummus', 'olives', 'pate', 'pâté', 'pesto', 'ready meal', 'ready meals', 'tapenade',
+                'antipasti', 'coleslaw', 'cooked chicken', 'hummus', 'houmous', 'olives',
+                'pate', 'pesto', 'pickle', 'pickles', 'ready meal', 'ready meals',
+                'rotisserie chicken', 'tapenade', 'tzatziki',
+                // FR
                 'traiteur',
             ],
         },
@@ -356,71 +401,95 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             id: 'grocery',
             label: 'Cupboard',
             keywords: [
-                'beans', 'cereal', 'cereals', 'chickpea', 'chickpeas', 'couscous', 'flour', 'honey', 'jam',
-                'ketchup', 'lentil', 'lentils', 'mayo', 'mayonnaise', 'mustard', 'noodles', 'nutella', 'nuts',
-                'oats', 'oil', 'olive oil', 'pasta', 'peanut', 'peanuts', 'pepper', 'rice', 'salt', 'sauce',
-                'sauces', 'soup', 'spice', 'spices', 'stock', 'sugar', 'vinegar', 'wrap', 'wraps',
-                'farine', 'huile', 'huile d\'olive', 'moutarde', 'pâtes', 'pates', 'riz', 'sel', 'sucre',
+                'baked beans', 'beans', 'black pepper', 'cannellini', 'cassoulet', 'cereal',
+                'cereals', 'cheerios', 'chickpea', 'chickpeas', 'choco flakes', 'cornflakes',
+                'couscous', 'flour', 'golden grahams', 'gravy', 'ground pepper', 'honey',
+                'jam', 'ketchup', 'lentil', 'lentils', 'marmite', 'mayo', 'mayonnaise',
+                'mustard', 'noodles', 'nutella', 'nuts', 'oats', 'oil', 'olive oil',
+                'pasta', 'pasta sauce', 'peanut', 'peanut butter', 'peanuts', 'pepper', 'pickle',
+                'quinoa', 'rice', 'salt', 'sauce', 'sauces', 'soup', 'spice', 'spices',
+                'stock', 'stock cube', 'stock cubes', 'sugar', 'tomato puree', 'vinegar',
+                'white pepper',
+                // FR
+                'farine', 'huile', 'moutarde', 'pates', 'riz', 'sel', 'sucre',
             ],
         },
         {
             id: 'snacks',
             label: 'Snacks & sweets',
             keywords: [
-                'biscuit', 'biscuits', 'candy', 'chocolate', 'chocolates', 'chippies', 'chips', 'cookie', 'cookies',
-                'crisp', 'crisps', 'ice cream', 'popcorn', 'snack', 'snacks', 'sweet', 'sweets',
-                'bonbon', 'bonbons', 'chocolat', 'glace', 'gâteau', 'gateau', 'gâteaux', 'gateaux',
+                'biscuit', 'biscuits', 'candy', 'chocolate', 'chocolates', 'chippies', 'chips',
+                'cookie', 'cookies', 'crisp', 'crisps', 'dessert', 'desserts', 'popcorn',
+                'pretzel', 'snack', 'snacks', 'sweet', 'sweets',
+                // FR
+                'bonbon', 'bonbons', 'chocolat', 'gateau', 'gateaux', 'glace',
             ],
         },
         {
             id: 'drinks',
             label: 'Drinks',
             keywords: [
-                'beer', 'beers', 'cider', 'coffee', 'cola', 'drink', 'drinks', 'juice', 'lemonade', 'prosecco',
-                'soda', 'sparkling', 'tea', 'water', 'wine', 'wines',
-                'bière', 'biere', 'café', 'cafe', 'eau', 'jus', 'thé', 'the', 'vin',
+                '0% beer', 'beer', 'beers', 'cider', 'coffee', 'cola', 'drink', 'drinks',
+                'ginger beer', 'jamaican ginger beer', 'juice', 'lager', 'lemonade',
+                'non-alcoholic', 'non alcoholic', 'prosecco', 'red wine', 'soda',
+                'sparkling', 'stubbies', 'stubby', 'tea', 'tonic', 'tonic water',
+                'water', 'white wine', 'wine', 'wines',
+                // FR
+                'biere', 'cafe', 'eau', 'jus', 'the', 'vin',
             ],
         },
         {
             id: 'frozen',
             label: 'Frozen',
             keywords: [
-                'frozen', 'freezer', 'ice', 'ice cream',
-                'congelé', 'congele', 'surgelé', 'surgele', 'surgelés', 'surgeles',
+                'frozen', 'freezer', 'ice cream', 'ice lolly', 'ice lollies', 'ice pop',
+                'ice pops',
+                // FR
+                'congele', 'surgele', 'surgeles',
             ],
         },
         {
             id: 'household',
             label: 'Household',
             keywords: [
-                'bin bag', 'bin bags', 'bleach', 'cleaning', 'detergent', 'dishwasher', 'foil', 'kitchen roll',
-                'laundry', 'napkin', 'napkins', 'paper towel', 'rubbish bag', 'sponge', 'sponges', 'toilet paper',
-                'washing up', 'cling film',
-                'éponge', 'eponge', 'lessive', 'papier toilette', 'sac poubelle',
+                'bin bag', 'bin bags', 'bleach', 'cling film', 'cleaning', 'detergent',
+                'dishwasher', 'dishwasher tablet', 'dishwasher tablets', 'fly trap',
+                'fly traps', 'foil', 'food bag', 'food bags', 'kitchen roll', 'laundry',
+                'napkin', 'napkins', 'paper towel', 'rubbish bag', 'sponge', 'sponges',
+                'toilet paper', 'toilet roll', 'tupperware', 'washing up', 'washing up liquid',
+                // FR
+                'eponge', 'lessive', 'papier toilette', 'sac poubelle',
             ],
         },
         {
             id: 'baby',
             label: 'Baby',
             keywords: [
-                'baby', 'babies', 'nappy', 'nappies', 'diaper', 'diapers', 'wipe', 'wipes', 'formula',
-                'bébé', 'bebe', 'couche', 'couches', 'lingette', 'lingettes',
+                'baby', 'babies', 'baby wipe', 'baby wipes', 'diaper', 'diapers',
+                'formula', 'nappy', 'nappies', 'nappy bag', 'nappy bags', 'nappy disposal',
+                'wipe', 'wipes',
+                // FR
+                'bebe', 'couche', 'couches', 'lingette', 'lingettes',
             ],
         },
         {
             id: 'personal',
             label: 'Personal care',
             keywords: [
-                'aftersun', 'deodorant', 'lotion', 'medicine', 'paracetamol', 'plaster', 'plasters', 'shampoo',
-                'soap', 'sun cream', 'sunscreen', 'toothpaste', 'toothbrush',
-                'crème solaire', 'creme solaire', 'dentifrice', 'savon',
+                'aftersun', 'calpol', 'deodorant', 'ibuprofen', 'lotion', 'medicine',
+                'nurofen', 'paracetamol', 'plaster', 'plasters', 'shampoo', 'soap',
+                'sun cream', 'sunscreen', 'toothbrush', 'toothpaste',
+                // FR
+                'creme solaire', 'dentifrice', 'savon',
             ],
         },
         {
             id: 'bbq',
             label: 'BBQ & outdoor',
             keywords: [
-                'bbq', 'barbecue', 'charcoal', 'coal', 'firelighter', 'firelighters', 'grill', 'lighter',
+                'bbq', 'barbecue', 'charcoal', 'coal', 'firelighter', 'firelighters',
+                'grill', 'lighter',
+                // FR
                 'charbon',
             ],
         },
@@ -435,6 +504,12 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             .replace(/['’]/g, "'");
     }
 
+    function keywordMatches(hay, needle) {
+        if (!needle) return false;
+        const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp('(?:^|[^a-z0-9])' + escaped + '(?:[^a-z0-9]|$)').test(hay);
+    }
+
     function categorizeItem(text) {
         const hay = normalizeText(text);
         let best = { id: 'other', score: 0 };
@@ -443,7 +518,7 @@ document.querySelectorAll('.day').forEach((d) => obs.observe(d));
             if (aisle.id === 'other') return;
             aisle.keywords.forEach((keyword) => {
                 const needle = normalizeText(keyword);
-                if (!needle || !hay.includes(needle)) return;
+                if (!keywordMatches(hay, needle)) return;
                 const score = needle.length;
                 if (score > best.score) best = { id: aisle.id, score };
             });
